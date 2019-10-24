@@ -3,8 +3,16 @@ const mongoose = require('mongoose');
 const routes = require('./routes');
 const cors = require('cors');
 const path = require('path');
+const socketio = require('socket.io');
+const http = require('http');
 
 const app = express();
+const server = http.Server(app);
+const io = socketio(server);
+
+io.on('connection', socket => {
+    console.log('Usuário conectado', socket.id);
+})
 
 mongoose.connect('mongodb+srv://wesley:wesley@cluster0-ezhaw.mongodb.net/base_dados?retryWrites=true&w=majority', {
     useNewUrlParser: true,
@@ -28,4 +36,4 @@ app.use('/files', express.static(path.resolve(__dirname, '..', 'uploads')));
 // Usa as rotas definidas no arquivo routes.js
 app.use(routes);
 
-app.listen(3333);
+server.listen(3333);
